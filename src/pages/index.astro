@@ -1,0 +1,165 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout>
+  <div class="background">
+    <h1 class="title">GTA<br />San Andreas</h1>
+  </div>
+
+  <svg height="100%" width="100%">
+    <defs>
+      <mask id="mask" x="0" y="0" height="100%" width="100%">
+        <rect x="0" y="0" height="100%" width="100%"></rect>
+        <text
+          x="50%"
+          y="50%"
+          fill="black"
+          text-anchor="middle"
+          dominant-baseline="middle"
+        >
+          <tspan x="53%" dy="-120">GRAND</tspan>
+          <tspan x="53%" dy="120">THEFT</tspan>
+          <tspan x="51%" dy="120">AUTO VI</tspan>
+        </text>
+      </mask>
+    </defs>
+    <rect x="0" y="0" height="100%" width="100%"></rect>
+  </svg>
+
+  <div class="tracker-1"></div>
+  <div class="spacer"></div>
+
+  <section>
+    <img class="image1" src="/image1.avif" />
+  </section>
+</Layout>
+
+<script>
+  import gsap from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const svg = document.querySelector("svg") as SVGSVGElement;
+  const title = document.querySelector(".title") as HTMLElement;
+  const tracker1 = document.querySelector(".tracker-1") as HTMLElement;
+  const background = document.querySelector(".background");
+
+  ScrollTrigger.create({
+    trigger: background,
+    start: "top top",
+    // end: "+=900px",
+    pin: true,
+    pinSpacing: true,
+  });
+
+  gsap.fromTo(
+    svg,
+    { scale: 1, top: 0, left: 0 },
+    {
+      top: "75%",
+      scale: 40,
+      left: "-20%",
+      scrollTrigger: {
+        trigger: tracker1,
+        start: "top top",
+        end: "bottom 70%",
+        scrub: 0.3,
+      },
+    }
+  );
+
+  gsap.fromTo(
+    svg,
+    { opacity: 1 },
+    {
+      opacity: 0,
+      scrollTrigger: {
+        trigger: tracker1,
+        start: "bottom 90%",
+        end: "bottom 80%",
+        scrub: 0.3,
+      },
+    }
+  );
+
+  gsap.fromTo(
+    title,
+    { opacity: 0, scale: 0.5, top: -20 },
+    {
+      opacity: 1,
+      top: 0,
+      scale: 1,
+      scrollTrigger: {
+        trigger: tracker1,
+        start: "bottom 80%",
+        end: "bottom top",
+        scrub: 0.3,
+      },
+    }
+  );
+</script>
+
+<style>
+  html,
+  body {
+    margin: 0;
+  }
+
+  body {
+    position: relative;
+    font-family: Arial, sans-serif;
+  }
+
+  .background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-size: cover;
+    background: url("/gta-background.jpeg") no-repeat center center / cover;
+    z-index: 0;
+    display: flex;
+    justify-content: center;
+  }
+
+  .title {
+    font-size: 70px;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    line-height: 1;
+    padding: 40px;
+    opacity: 0;
+  }
+
+  svg {
+    font-size: 120px;
+    font-weight: bold;
+    position: fixed;
+    top: 0;
+  }
+
+  svg rect {
+    mask: url(#mask);
+    fill: rgb(252, 252, 252);
+  }
+
+  svg > rect {
+    fill: rgb(0, 0, 0);
+  }
+
+  .tracker-1 {
+    height: 100vh;
+  }
+
+  .spacer {
+    height: 100vh;
+  }
+
+  section {
+    height: 100vh;
+  }
+</style>
