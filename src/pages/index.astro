@@ -3,163 +3,277 @@ import Layout from "../layouts/Layout.astro";
 ---
 
 <Layout>
-  <div class="background">
-    <h1 class="title">GTA<br />San Andreas</h1>
+  <div id="smooth-wrapper">
+    <div id="smooth-content" class="h-[4000px]"></div>
   </div>
 
-  <svg height="100%" width="100%">
-    <defs>
-      <mask id="mask" x="0" y="0" height="100%" width="100%">
-        <rect x="0" y="0" height="100%" width="100%"></rect>
-        <text
-          x="50%"
-          y="50%"
-          fill="black"
-          text-anchor="middle"
-          dominant-baseline="middle"
-        >
-          <tspan x="53%" dy="-120">GRAND</tspan>
-          <tspan x="53%" dy="120">THEFT</tspan>
-          <tspan x="51%" dy="120">AUTO VI</tspan>
-        </text>
-      </mask>
-    </defs>
-    <rect x="0" y="0" height="100%" width="100%"></rect>
-  </svg>
+  <div id="scene1" class="fixed top-0 left-0 w-screen h-screen">
+    <div
+      id="release-date"
+      class="absolute top-0 left-0 w-screen h-screen bg-black flex flex-col justify-center items-center opacity-0"
+    >
+      <div
+        class="absolute top-[170px] flex flex-col justify-center items-center"
+      >
+        <img src="/VI-logo.png" class="logo h-[200px] mb-20" />
 
-  <div class="tracker-1"></div>
-  <div class="spacer"></div>
+        <h3 class="text-[150px] leading-[0.9] font-bold text-white text-center">
+          COMING<br />MAY 26<br />2026
+        </h3>
+      </div>
 
-  <section>
-    <img class="image1" src="/image1.avif" />
-  </section>
-</Layout>
+      <div
+        id="overlay"
+        class="absolute top-0 left-0 w-screen h-screen bg-linear-to-b from-black from-70% to-transparent"
+      >
+      </div>
+    </div>
 
-<script>
-  import gsap from "gsap";
-  import { ScrollTrigger } from "gsap/ScrollTrigger";
+    <div
+      id="background1"
+      class="absolute top-0 left-0 w-screen h-screen bg-[url('/gta-background.webp')] bg-cover bg-no-repeat bg-center z-0 flex justify-center scale-[1.2] opacity-0 origin-center"
+      style="--clip-height: 100%; clip-path: inset(0 0 calc(100% - var(--clip-height, 100%)) 0);"
+    >
+      <img id="logo1" src="/logo.svg" class="h-100 w-auto mt-20" />
+    </div>
 
-  gsap.registerPlugin(ScrollTrigger);
+    <svg
+      id="masked-overlay"
+      height="100%"
+      width="100%"
+      class="absolute top-50 scale-[180]"
+    >
+      <image
+        href="/logo.svg"
+        width="300"
+        height="300"
+        x="50%"
+        y="50%"
+        transform="translate(-150, -150)"
+        preserveAspectRatio="xMidYMid meet"
+        class="opacity-0"
+      />
 
-  const svg = document.querySelector("svg") as SVGSVGElement;
-  const title = document.querySelector(".title") as HTMLElement;
-  const tracker1 = document.querySelector(".tracker-1") as HTMLElement;
-  const background = document.querySelector(".background");
+      <defs>
+        <mask id="mask" x="0" y="0" height="100%" width="100%">
+          <rect x="0" y="0" height="100%" width="100%"></rect>
 
-  ScrollTrigger.create({
-    trigger: background,
-    start: "top top",
-    // end: "+=900px",
-    pin: true,
-    pinSpacing: true,
-  });
+          <image
+            href="/logo-black.svg"
+            width="300"
+            height="300"
+            x="50%"
+            y="50%"
+            fill="black"
+            transform="translate(-150, -150)"
+            preserveAspectRatio="xMidYMid meet"
+          />
+        </mask>
+      </defs>
 
-  gsap.fromTo(
-    svg,
-    { scale: 1, top: 0, left: 0 },
-    {
-      top: "75%",
-      scale: 40,
-      left: "-20%",
-      scrollTrigger: {
-        trigger: tracker1,
-        start: "top top",
-        end: "bottom 70%",
-        scrub: 0.3,
-      },
-    }
-  );
+      <rect
+        x="0"
+        y="0"
+        height="60%"
+        width="100%"
+        style="fill:rgba(0, 0, 0); background-color: black;"></rect>
+    </svg>
 
-  gsap.fromTo(
-    svg,
-    { opacity: 1 },
-    {
+    <div
+      id="overlay2"
+      class="absolute top-[100vh] left-0 w-screen h-screen"
+      style="background: linear-gradient(to bottom, transparent 0%, black var(--overlay2-to)); --overlay2-to: 100%;"
+    >
+    </div>
+  </div>
+
+  <script>
+    import gsap from "gsap";
+    import { ScrollTrigger } from "gsap/ScrollTrigger";
+    import { ScrollSmoother } from "gsap/ScrollSmoother";
+    gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
+
+    ScrollSmoother.create({
+      smooth: 1,
+      effects: true,
+    });
+
+    document.addEventListener("scroll", () => {
+      console.log(window.scrollY);
+    });
+
+    ///////////////////// background fade in + zoom in on page load
+    const background1 = document.getElementById("background1") as HTMLElement;
+
+    gsap.fromTo(
+      background1,
+      { scale: 1.2, opacity: 0 },
+      {
+        scale: 1.12,
+        opacity: 1,
+        duration: 1,
+        ease: "power1.out",
+      }
+    );
+
+    const logo1 = document.getElementById("logo1") as HTMLImageElement;
+
+    // zoom out background (from scroll 0-700px)
+    gsap.fromTo(
+      background1,
+      { scale: 1.12 },
+      {
+        scale: 1,
+        scrollTrigger: {
+          start: "0px top",
+          end: "700px top",
+          scrub: 0.3,
+        },
+      }
+    );
+
+    // fade out logo1 (from scroll 0-260px)
+    gsap.to(logo1, {
       opacity: 0,
       scrollTrigger: {
-        trigger: tracker1,
-        start: "bottom 90%",
-        end: "bottom 80%",
+        start: "0px top",
+        end: "260px top",
         scrub: 0.3,
       },
-    }
-  );
+    });
 
-  gsap.fromTo(
-    title,
-    { opacity: 0, scale: 0.5, top: -20 },
-    {
-      opacity: 1,
-      top: 0,
-      scale: 1,
+    const maskedOverlay = document.getElementById(
+      "masked-overlay"
+    ) as HTMLElement;
+
+    // zoom in maskedOverlay
+    ScrollTrigger.create({
+      start: 0,
+      end: 1500,
+      scrub: true,
+      onUpdate: (self) => {
+        const scroll = self.scroll();
+        let scale, top;
+
+        if (scroll <= 1000) {
+          scale = gsap.utils.mapRange(0, 1000, 180, 1, scroll);
+          top = gsap.utils.mapRange(0, 1000, 200, -270, scroll);
+        } else {
+          scale = gsap.utils.mapRange(1000, 1500, 1, 0.7, scroll);
+          top = gsap.utils.mapRange(1000, 1500, -270, -200, scroll);
+        }
+
+        gsap.set(maskedOverlay, {
+          scale,
+          top,
+        });
+      },
+    });
+
+    // fade out maskedOverlay background
+    gsap.to(maskedOverlay.querySelector("rect"), {
+      opacity: 0,
       scrollTrigger: {
-        trigger: tracker1,
-        start: "bottom 80%",
-        end: "bottom top",
+        start: "1000px top",
+        end: "1001px top",
         scrub: 0.3,
       },
-    }
-  );
-</script>
+    });
 
-<style>
-  html,
-  body {
-    margin: 0;
-  }
+    // fade in white maskedOverlay image background
+    gsap.to(maskedOverlay.querySelector("image"), {
+      opacity: 1,
+      scrollTrigger: {
+        start: "560px top",
+        end: "950px top",
+        scrub: 0.3,
+      },
+    });
 
-  body {
-    position: relative;
-    font-family: Arial, sans-serif;
-  }
+    gsap.to(background1, {
+      "--clip-height": "40%",
+      scrollTrigger: {
+        start: "790px top",
+        end: "950px top",
+        scrub: 0.3,
+      },
+    });
 
-  .background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-size: cover;
-    background: url("/gta-background.jpeg") no-repeat center center / cover;
-    z-index: 0;
-    display: flex;
-    justify-content: center;
-  }
+    gsap.fromTo(
+      background1,
+      { opacity: 1 },
+      {
+        opacity: 0,
+        scrollTrigger: {
+          start: "940px top",
+          end: "945px top",
+          scrub: 0.3,
+        },
+      }
+    );
 
-  .title {
-    font-size: 70px;
-    color: white;
-    font-weight: bold;
-    text-align: center;
-    line-height: 1;
-    padding: 40px;
-    opacity: 0;
-  }
+    const releaseDate = document.getElementById("release-date") as HTMLElement;
 
-  svg {
-    font-size: 120px;
-    font-weight: bold;
-    position: fixed;
-    top: 0;
-  }
+    //fade in black background overlay behind maskedOverlay
+    gsap.to(releaseDate, {
+      opacity: 1,
+      scrollTrigger: {
+        start: "100vh top",
+        end: "101vh top",
+        scrub: 0.3,
+      },
+    });
 
-  svg rect {
-    mask: url(#mask);
-    fill: rgb(252, 252, 252);
-  }
+    // move linear gradient up to reveal release date
+    gsap.to(releaseDate.querySelector("#overlay"), {
+      top: -1080,
+      scrollTrigger: {
+        start: "860px top",
+        end: "1800px top",
+        scrub: 0.3,
+      },
+    });
 
-  svg > rect {
-    fill: rgb(0, 0, 0);
-  }
+    // scale out container on scroll
+    gsap.fromTo(
+      releaseDate.querySelector("div"),
+      { scale: 1 },
+      {
+        scale: 0.7,
+        scrollTrigger: {
+          start: "1030px top",
+          end: "1500px top",
+          scrub: 0.3,
+        },
+      }
+    );
 
-  .tracker-1 {
-    height: 100vh;
-  }
+    const overlay2 = document.querySelector("#overlay2");
 
-  .spacer {
-    height: 100vh;
-  }
+    // move linear gradient up to hide release date
+    gsap.to(overlay2, {
+      top: 0,
+      scrollTrigger: {
+        start: "1200px top",
+        end: "1400px top",
+        scrub: 0.3,
+      },
+    });
+    gsap.to(overlay2, {
+      "--overlay2-to": "30%",
+      scrollTrigger: {
+        start: "1400px top",
+        end: "1800px top",
+        scrub: 0.3,
+      },
+    });
 
-  section {
-    height: 100vh;
-  }
-</style>
+    // ScrollTrigger.create({
+    //   trigger: background1,
+    //   start: "top top",
+    //   // end: "+=900px",
+    //   pin: true,
+    //   pinSpacing: true,
+    // });
+  </script>
+</Layout>
